@@ -3,7 +3,6 @@
 # Import and initialize the pygame library
 import pygame
 from math import sqrt
-from random import random
 from copy import deepcopy
 from dataclasses import dataclass
 pygame.init()
@@ -76,14 +75,9 @@ class Simulation:
     bodies: list[Body]
     restitution: float
 
-current_sim = Simulation(Vec2(0.0,0.0), 0.0, Vec2(100.0, 200.0), False, [], 1.0)
+current_sim = Simulation(Vec2(0.0,0.0), 0.0, Vec2(100.0, 200.0))
 
 def setup_simulation():
-    body_count = 10
-    current_sim.bodies = [Body(10, 10, Vec2(random(), random()), Vec2(random(), random())  )]
-
-
-    
 
 
 # Run until the user asks to quit
