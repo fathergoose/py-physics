@@ -38,6 +38,7 @@ path = "src/py_physics/__about__.py"
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
+  "black",
 ]
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"
@@ -79,3 +80,5 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
+
+[tool.black]

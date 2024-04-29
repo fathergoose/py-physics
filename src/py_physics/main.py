@@ -1,17 +1,20 @@
 # Simple pygame program
 
 # Import and initialize the pygame library
-import pygame
+import pygame as game
+from pygame import Surface, display, time
+import pygame.draw as pyg_draw
 from math import sqrt
 from random import random
 from copy import deepcopy
 from dataclasses import dataclass
-pygame.init()
+
+game.init()
 
 # Set up the drawing window
-screen = pygame.display.set_mode([500, 500])
+screen = display.set_mode([500, 500])
 
-clock = pygame.time.Clock()
+clock = time.Clock()
 
 dt = 0
 init_y = 50
@@ -21,6 +24,8 @@ init_v = 0
 g = 9.8/2
 t = 0
 scale = 100
+
+DARK_GRAY = (245, 245, 245)
 
 
 @dataclass(frozen=True)
@@ -33,6 +38,9 @@ class Vec2:
 
     def length(self) -> float:
         return sqrt(self.x**2 + self.y**2)
+
+    def as_tuple(self) -> tuple[float, float]:
+        return (self.x, self.y)
 
 
 def scale_vec(vec: Vec2, factor: float) -> Vec2:
@@ -72,27 +80,46 @@ class Simulation:
     gravity: Vec2
     dt: float
     boundaries: Vec2
+    surface: Surface
     paused: bool
     bodies: list[Body]
     restitution: float
 
-current_sim = Simulation(Vec2(0.0,0.0), 0.0, Vec2(100.0, 200.0), False, [], 1.0)
+
+current_sim = Simulation(Vec2(0.0,0.0), 0.0, Vec2(100.0, 200.0), screen, False, [], 1.0)
 
 def setup_simulation():
     body_count = 10
-    current_sim.bodies = [Body(10, 10, Vec2(random(), random()), Vec2(random(), random())  )]
-
-
+    # TODO: multiply random weights by current_sim.boundaries.x|y 
+    # INFO: I assume random locations need to be checked to prevent overlaps?
+    current_sim.bodies = [
+            Body(10, 10, Vec2(random(), random()), Vec2(random(), random()))
+            for _ in range(body_count)]
     
+# TODO: The example I'm following has this function handling all the platform specific graphics generation
+# Draw the visual representations of your simulatied bodies in this function
 
+# INFO: Parameter docs for pygame.draw.circle()
+
+# circle(
+        # surface: Surface, 
+        # color: Color|int|Tuple, 
+        # ceneter: 2Vector|Tuple[float|int]|List[float|int], 
+        # radius: float|int)
+# )
+
+def draw():
+    for body in current_sim.bodies:
+        pyg_draw.circle(surface=screen, color=DARK_GRAY, center=body.pos.as_tuple(), radius=body.radius)
+        return False
 
 # Run until the user asks to quit
 running = True
 while running:
 
     # Did the user click the window close button?
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    for event in game.event.get():
+        if event.type == game.QUIT:
             running = False
 
     # Fill the background with white
@@ -102,15 +129,15 @@ while running:
     t = t + dt
     y = t**2 * g + t * init_v + init_y
 
-    # Draw a solid blue circle in the center
-    pygame.draw.circle(screen, (0, 25, 25), (250, y), 10)
+
+    pyg_draw.circle(screen, (0, 25, 25), (250, y), 10)
 
     # Flip the display
-    pygame.display.flip()
+    display.flip()
 
     dt = clock.tick(60) / scale
     print(t)
 
 
 # Done! Time to quit.
-pygame.quit()
+game.quit()
