@@ -4,6 +4,7 @@
 from copy import deepcopy
 from dataclasses import dataclass
 from math import sqrt
+import math
 from random import random
 
 import pygame as game
@@ -47,6 +48,7 @@ scale = 100
 WHITE = (255, 255, 255)
 DARK_GRAY = (25, 25, 25)
 GRAVITY = Vec2(0, 9.8)
+DENSITY = 1.0
 
 
 # TODO: multiply random weights by current_sim.boundaries.x|y
@@ -57,8 +59,8 @@ def setup_simulation(body_count=10):
     )
     current_sim.bodies = [
         Body(
-            radius=30 * random(),
-            mass=10,
+            (radius := 30 * random()),
+            (mass := DENSITY * (volume := math.pi * 4/3 * radius ** 3)),
             pos=Vec2(
                 current_sim.boundaries.x * random(), current_sim.boundaries.y * random()
             ),
