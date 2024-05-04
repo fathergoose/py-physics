@@ -10,6 +10,7 @@ from random import random
 import pygame as game
 import pygame.draw as pyg_draw
 from pygame import Surface, display, time
+import pygame_gui
 
 from py_physics.sim import (
     Body,
@@ -30,9 +31,13 @@ game.init()
 
 # Set up the drawing window
 simulation_boundries = Vec2(500, 500)
+window_boundries = (700, 500)
 # TODO: have margin around the boundries in the window
 # window_size >> simulation_boundries
-surface = display.set_mode(simulation_boundries.as_tuple())
+window_surface = display.set_mode(window_boundries)
+
+background = game.Surface((200, 500))
+background.fill(game.Color('#e3e3e3'))
 
 clock = time.Clock()
 
@@ -43,19 +48,26 @@ init_v = 0
 # But at least this will remind me of what the term is for
 g = 9.8 / 2
 t = 0
-scale = 100
 
 WHITE = (255, 255, 255)
+BG_GRAY = (227, 227, 227)
 DARK_GRAY = (25, 25, 25)
+#e3e3e3
 GRAVITY = Vec2(0, 9.8)
 DENSITY = 1.0
+
+manager = pygame_gui.UIManager(window_boundries)
+
+hello_button = pygame_gui.elements.UIButton(relative_rect=game.Rect((550, 60), (100, 50)),
+                                                                      text='say hi',
+                                                                      manager=manager)
 
 
 # TODO: multiply random weights by current_sim.boundaries.x|y
 # NOTE: I assume random locations need to be checked to prevent overlaps?
 def setup_simulation(body_count=10):
     current_sim = Simulation(
-        GRAVITY, 0.0, simulation_boundries, surface, False, [], 0.85
+        GRAVITY, 0.0, simulation_boundries, window_surface, False, [], 0.85
     )
     current_sim.bodies = [
         Body(
@@ -74,7 +86,6 @@ def setup_simulation(body_count=10):
 def draw(surface: Surface, current_sim: Simulation):
     surface.fill((255, 255, 255))
     for body in current_sim.bodies:
-        # Fill the background with white
         pyg_draw.circle(
             surface=surface,
             color=DARK_GRAY,
@@ -102,16 +113,27 @@ if __name__ == "__main__":
         for event in game.event.get():
             if event.type == game.QUIT:
                 running = False
+            
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == hello_button:
+                    print('hi alex!!!')
+            manager.process_events(event)
+
 
         simulate(simulation)
 
-        draw(surface, simulation)
+        draw(window_surface, simulation)
 
         # Flip the display
-        display.flip()
+        # display.flip()
 
-        simulation.dt = clock.tick(60) / scale
-        print(simulation.bodies[0].pos)
+        simulation.dt = clock.tick(60) / 100.0
+        manager.update(simulation.dt)
+        window_surface.blit(background, (500, 0))
+        
+        manager.draw_ui(window_surface)
+        
+        display.update()
 
     # Done! Time to quit.
     game.quit()
