@@ -1,16 +1,13 @@
 # Simple pygame program
 
 # Import and initialize the pygame library
-from copy import deepcopy
-from dataclasses import dataclass
-from math import sqrt
 import math
 from random import random
 
 import pygame as game
 import pygame.draw as pyg_draw
-from pygame import Surface, display, time
 import pygame_gui
+from pygame import Surface, display, time
 
 from py_physics.sim import (
     Body,
@@ -20,10 +17,6 @@ from py_physics.sim import (
 )
 from py_physics.vectors import (
     Vec2,
-    add_vectors,
-    dot_product,
-    scale_vec,
-    subtract_vectors,
 )
 
 game.init()
@@ -113,7 +106,7 @@ if __name__ == "__main__":
         for event in game.event.get():
             if event.type == game.QUIT:
                 running = False
-            
+
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == hello_button:
                     print('hi alex!!!')
@@ -130,9 +123,9 @@ if __name__ == "__main__":
         simulation.dt = clock.tick(60) / 100.0
         manager.update(simulation.dt)
         window_surface.blit(background, (500, 0))
-        
+
         manager.draw_ui(window_surface)
-        
+
         display.update()
 
     # Done! Time to quit.

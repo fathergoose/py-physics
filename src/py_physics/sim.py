@@ -1,4 +1,7 @@
+from dataclasses import dataclass
+
 from pygame import Surface
+
 from py_physics.vectors import (
     Vec2,
     add_vectors,
@@ -6,8 +9,6 @@ from py_physics.vectors import (
     scale_vec,
     subtract_vectors,
 )
-
-from dataclasses import dataclass
 
 
 @dataclass
