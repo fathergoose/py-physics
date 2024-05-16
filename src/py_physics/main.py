@@ -30,34 +30,24 @@ window_boundries = (700, 500)
 window_surface = display.set_mode(window_boundries)
 
 background = game.Surface((200, 500))
-background.fill(game.Color('#e3e3e3'))
+background.fill(game.Color("#e3e3e3"))
 
 clock = time.Clock()
 
-dt = 0
-init_y = 50
-init_v = 0
-# This doesn't have much meaning without some kind of scale,
-# But at least this will remind me of what the term is for
-g = 9.8 / 2
-t = 0
 
 WHITE = (255, 255, 255)
 BG_GRAY = (227, 227, 227)
 DARK_GRAY = (25, 25, 25)
-#e3e3e3
 GRAVITY = Vec2(0, 9.8)
 DENSITY = 1.0
 
 manager = pygame_gui.UIManager(window_boundries)
 
-hello_button = pygame_gui.elements.UIButton(relative_rect=game.Rect((550, 60), (100, 50)),
-                                                                      text='say hi',
-                                                                      manager=manager)
+restart_button = pygame_gui.elements.UIButton(
+    relative_rect=game.Rect((550, 60), (100, 50)), text="restart", manager=manager
+)
 
 
-# TODO: multiply random weights by current_sim.boundaries.x|y
-# NOTE: I assume random locations need to be checked to prevent overlaps?
 def setup_simulation(body_count=10):
     current_sim = Simulation(
         GRAVITY, 0.0, simulation_boundries, window_surface, False, [], 0.85
@@ -65,11 +55,11 @@ def setup_simulation(body_count=10):
     current_sim.bodies = [
         Body(
             (radius := 30 * random()),
-            (mass := DENSITY * (volume := math.pi * 4/3 * radius ** 3)),
+            (mass := DENSITY * (volume := math.pi * 4 / 3 * radius**3)),
             pos=Vec2(
                 current_sim.boundaries.x * random(), current_sim.boundaries.y * random()
             ),
-            vel=Vec2(10*random(), 10*random()),
+            vel=Vec2(10 * random(), 10 * random()),
         )
         for _ in range(body_count)
     ]
@@ -108,17 +98,12 @@ if __name__ == "__main__":
                 running = False
 
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == hello_button:
-                    print('hi alex!!!')
+                if event.ui_element == restart_button:
+                    print("hi alex!!!")
             manager.process_events(event)
 
-
         simulate(simulation)
-
         draw(window_surface, simulation)
-
-        # Flip the display
-        # display.flip()
 
         simulation.dt = clock.tick(60) / 100.0
         manager.update(simulation.dt)
@@ -130,5 +115,3 @@ if __name__ == "__main__":
 
     # Done! Time to quit.
     game.quit()
-
-    # Run until the user asks to quit
