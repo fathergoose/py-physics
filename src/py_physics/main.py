@@ -55,7 +55,7 @@ def setup_simulation(body_count=10):
     current_sim.bodies = [
         Body(
             (radius := 30 * random()),
-            (mass := DENSITY * (volume := math.pi * 4 / 3 * radius**3)),
+            (DENSITY * (math.pi * 4 / 3 * radius**3)),
             pos=Vec2(
                 current_sim.boundaries.x * random(), current_sim.boundaries.y * random()
             ),
@@ -86,8 +86,8 @@ def simulate(current_sim: Simulation):
         handle_boundry_colision(body, current_sim.boundaries)
 
 
-if __name__ == "__main__":
 
+def main():
     simulation = setup_simulation()
     running = True
     while running:
@@ -115,3 +115,6 @@ if __name__ == "__main__":
 
     # Done! Time to quit.
     game.quit()
+
+if __name__ == "__main__":
+    main()
