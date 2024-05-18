@@ -80,6 +80,12 @@ def draw(surface: Surface, current_sim: Simulation):
 def simulate(current_sim: Simulation):
     for i, body in enumerate(current_sim.bodies):
         body.update(current_sim.dt, current_sim.gravity)
+        # NOTE: for every initial body[i] we loop over the "rest" of the bodies
+        #       by using `for _ in range(i+1, i_max+1)` when we reach i_max the
+        #       nested loop is called `for _ in []` i.e. it is not called.
+        #       This is convenient, because when we reach the final body in the
+        #       outer loop that means there are no remaining bodies with wich
+        #       to collide.
         for j in range(i + 1, len(current_sim.bodies)):
             body_2 = current_sim.bodies[j]
             handle_coliding_bodies(body, body_2, current_sim.restitution)
